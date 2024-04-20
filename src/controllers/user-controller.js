@@ -161,7 +161,15 @@ const changeUserPasswordController = async (req, res) => {
 // delete user profile
 const deleteUserController = async (req, res)=> {
     try {
-        await User.findByIdAndDelete(req.params.id);
+        const userInfo = await User.findByIdAndDelete(req.params.id);
+
+        if (!userInfo) {
+            return res.status(404).json({
+                success: false,
+                message: 'User Not Found'
+            });
+        }
+
         return res.status(200).json({
             success: true,
             message: 'User Deleted Successfully'

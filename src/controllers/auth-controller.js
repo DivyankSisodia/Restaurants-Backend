@@ -13,7 +13,6 @@ async function registerController(req, res) {
                 message: "Please Provide All Fields",
             });
         }
-        console.log(req.files);
 
         const profileLocalPath = req.files.profile[0].path;
 
