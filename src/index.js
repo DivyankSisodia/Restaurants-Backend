@@ -1,21 +1,25 @@
 const colors = require('colors');
 const express = require('express');
 const connect = require('./config/database');
-const user = require('./models/user');
+const bodyParser = require('body-parser');
+
 const { PORT } = require('./config/server-config');
+const ApiRoutes = require('./routes/index');
+
+
 const app = express();
 
-app.listen(PORT, async () => {
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
+app.use('/api', ApiRoutes);
+app.use('/home', (req, res) => {
+    res.json({
+        message: 'Welcome to home page'
+    });
+});
+
+app.listen(PORT, async () => {
     console.log(`Server is running on port ${PORT}`.bgMagenta);
     await connect();
-    // const newUser = new user({
-    //     name: 'John Doe',
-    //     email: 'jo@gmail.com',
-    //     password: '123456',
-    //     address: ['123 Main Street', 'Apt 1'],
-    //     phone: '1234567890',
-    //     userType: 'admin'
-    // })
-    // await newUser.save();
 });
