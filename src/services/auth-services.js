@@ -20,12 +20,14 @@ async function registerUser(userData) {
         userData.password = hashedPassword;
 
         const user = await userRepository.createUser(userData);
+        console.log("user",userData);
         return { success: true, message: "Successfully Registered", user };
     } catch (error) {
         console.log(error);
         return { success: false, message: "Error In Register Service", error };
     }
 }
+
 
 async function loginUser(email, password) {
     try {
