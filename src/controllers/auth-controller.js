@@ -1,17 +1,35 @@
 // userController.js
 
 const userService = require("../services/auth-services");
+const uploadOnCloudinary = require("../utils/cloudinary");
 
 async function registerController(req, res) {
     try {
         const { userName, email, password, phone, address } = req.body;
-        if (!userName || !email || !password || !address || !phone ) {
+
+        if (!userName || !email || !password || !address || !phone) {
             return res.status(500).send({
                 success: false,
                 message: "Please Provide All Fields",
             });
         }
-        const result = await userService.registerUser(req.body);
+        console.log(req.files);
+
+        const profileLocalPath = req.files.profile[0].path;
+
+        const profileAvatar = await uploadOnCloudinary(profileLocalPath);
+
+        if (!profileAvatar) {
+            return res.status(500).json({
+                success: false,
+                message: "Error in Uploading Profile Image",
+            });
+        }
+
+        const result = await userService.registerUser({
+            userName, email, password, phone, address, profile: profileAvatar.secure_url
+        });
+
         if (!result.success) {
             return res.status(500).send(result);
         }
@@ -26,6 +44,7 @@ async function registerController(req, res) {
     }
 }
 
+ 
 async function loginController(req, res) {
     try {
         const { email, password } = req.body;

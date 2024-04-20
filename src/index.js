@@ -13,11 +13,6 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use('/api', ApiRoutes);
-app.use('/home', (req, res) => {
-    res.json({
-        message: 'Welcome to home page'
-    });
-});
 
 app.listen(PORT, async () => {
     console.log(`Server is running on port ${PORT}`.bgMagenta);
