@@ -3,18 +3,27 @@
 const userService = require("../services/auth-services");
 const uploadOnCloudinary = require("../utils/cloudinary");
 
-async function registerController(req, res) {
+const registerController = async (req, res) => {
     try {
         const { userName, email, password, phone, address } = req.body;
 
         if (!userName || !email || !password || !address || !phone) {
-            return res.status(500).send({
+            return res.status(400).json({
                 success: false,
                 message: "Please Provide All Fields",
             });
         }
 
-        const profileLocalPath = req.files.profile[0].path;
+        // Check if the file is attached to the request
+        if (!req.file) {
+            return res.status(400).json({
+                success: false,
+                message: "Profile image is required",
+            });
+        }
+
+        // Proceed with uploading the profile image
+        const profileLocalPath = req.file.path;
 
         const profileAvatar = await uploadOnCloudinary(profileLocalPath);
 
@@ -30,18 +39,18 @@ async function registerController(req, res) {
         });
 
         if (!result.success) {
-            return res.status(500).send(result);
+            return res.status(500).json(result);
         }
-        res.status(201).send(result);
+        res.status(201).json(result);
     } catch (error) {
         console.log(error);
-        res.status(500).send({
+        res.status(500).json({
             success: false,
             message: "Error In Register API",
-            error,
+            error: error.message,
         });
     }
-}
+};
 
  
 async function loginController(req, res) {

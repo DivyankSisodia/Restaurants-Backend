@@ -6,7 +6,7 @@ const router = express.Router();
 
 //  http://localhost:3000/api/v1/auth/register
 router.route("/auth/register").post(
-    upload,
+    upload.single('profile'), // Make sure the field name matches what you're sending from Postman
     registerController
 );
 

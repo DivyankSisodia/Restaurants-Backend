@@ -33,7 +33,7 @@ const restaurantSchema = new mongoose.Schema(
         },
         delivery: {
             type: Boolean,
-            required: true,
+            default: true,
         },
         isOpen:{
             type: Boolean,
@@ -47,3 +47,5 @@ const restaurantSchema = new mongoose.Schema(
 {timestamps: true});
 
 const Restaurant = mongoose.model('Restaurant', restaurantSchema);
+
+module.exports = Restaurant;

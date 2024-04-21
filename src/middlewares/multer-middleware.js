@@ -1,3 +1,4 @@
+
 const multer = require("multer");
 
 const storage = multer.diskStorage({
@@ -9,8 +10,6 @@ const storage = multer.diskStorage({
     },
 });
 
-const upload = multer({ storage: storage }).fields([
-    { name: 'profile', maxCount: 1 },
-]);
+const upload = multer({ storage: storage });
 
 module.exports = upload;
