@@ -58,6 +58,16 @@ const createFoodController = async (req, res) => {
         });
 
         const savedFood = await newFood.save();
+        await Restaurant.findByIdAndUpdate(
+            {
+                _id: restaurantID,
+            },{
+                $push: {
+                    foods: savedFood._id
+                }
+            },
+            { new: true }
+        )
 
         if (!savedFood) {
             return res.status(500).json({
@@ -69,10 +79,10 @@ const createFoodController = async (req, res) => {
         // Populate the restaurant and category fields in the savedFood object
         // savedFood = await savedFood.populate({ path: 'Restaurant', options: { strictPopulate: false } }).exec();
 
-        const selectedCategory = await Restaurant.findById(restaurantID)
-            .populate({
-                path: "foods",
-            }).exec()
+        // const selectedCategory = await Restaurant.findById(restaurantID)
+        //     .populate({
+        //         path: "foods",
+        //     }).exec()
 
 
 
