@@ -102,5 +102,113 @@ const createFoodController = async (req, res) => {
     }
 }
 
-module.exports = createFoodController;
+const getAllFoodController = async (req, res) => {
+    try {
+        const foods = await Food.find({})
+            .populate({
+                path: 'restaurant',
+                select: 'title'
+            })
+            .exec();
+
+        if (!foods) {
+            return res.status(404).json({
+                success: false,
+                message: "No food found"
+            });
+        }
+
+        res.status(200).json({
+            success: true,
+            message: "All Foods",
+            data: foods
+        });
+
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: "Internal server error",
+            error: error.message
+        });
+    }
+}
+
+const getSingleFoodController = async(req, res) => {
+    try {
+        const foodId = req.params.id;
+
+        if(!foodId) {
+            return res.status(400).json({
+                success: false,
+                message: "Food ID is required"
+            });
+        }
+
+        const food = await Food.findOne({ _id: foodId });
+
+        if(!food) {
+            return res.status(404).json({
+                success: false,
+                message: "Food not found"
+            });
+        }
+
+        res.status(200).json({
+            success: true,
+            message: "Single Food",
+            data: food
+        });
+
+    } catch (error) {
+        re.status(500).json({
+            success: false,
+            message: "Error while getting single food",
+            error: error.message
+        });
+    }
+}
+
+const searchFoodController = async (req, res) => {
+    try {
+        const key = req.params.key;
+        console.log(key);
+
+        if (!key) {
+            return res.status(400).json({
+                success: false,
+                message: "Key is required"
+            });
+        }
+
+       const search = await Food.find(
+        {
+            "$or": [
+                { "title" : {$regex:req.params.key}},
+                { "description" : {$regex:req.params.key}}
+            ]
+        }
+       );
+
+        if (!search) {
+            return res.status(404).json({
+                success: false,
+                message: "No food found"
+            });
+        }
+
+        res.status(200).json({
+            success: true,
+            message: "All Foods",
+            data: search
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: "error in API",
+            error: error.message
+        });
+    }
+}
+
+module.exports = { createFoodController, getAllFoodController, getSingleFoodController, searchFoodController };
 
