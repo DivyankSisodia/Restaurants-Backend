@@ -8,11 +8,12 @@ const restaurantSchema = new mongoose.Schema(
         },
         imageUrl:{
             type: String,
-            required: [true, 'Image is required'],
         },
-        foods: {
-            type: Array,
-        },
+        foods: [
+            {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Food',
+        }],
         time :{
             type: String,
             required: true,

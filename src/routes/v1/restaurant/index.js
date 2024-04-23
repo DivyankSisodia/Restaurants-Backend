@@ -6,9 +6,7 @@ const { createRestaurantController, getAllRestaurantsController, getRestaurantBy
 const router = express.Router();
 
 // Create a restaurant
-router.post('/restaurant/create', upload.single('imageUrl'), async (req, res) => {
-    createRestaurantController(req, res);
-});
+router.post('/restaurant/create', upload.single('imageUrl'), createRestaurantController);
 
 // Get all restaurants
 router.get('/restaurant/all', getAllRestaurantsController);

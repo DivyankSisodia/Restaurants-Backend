@@ -22,12 +22,12 @@ const foodSchema = new mongoose.Schema({
     },
     restaurant: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Restaurant',
+        ref: 'Restaurant', // Ensure that this matches the model name
         required: true
     },
     image: {
         type: String,
-        default: 'http://surl.li/svivr'
+        default: 'http://surl.li/swbow'
     },
     rating: {
         type: Number,
@@ -40,4 +40,8 @@ const foodSchema = new mongoose.Schema({
         type: Number,
         default: 0
     },
-});
+}, { timestamps: true });
+
+const Food = mongoose.model('Food', foodSchema);
+
+module.exports = Food;

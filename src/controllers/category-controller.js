@@ -1,5 +1,5 @@
 const Category = require('../models/category.model');
-const {color} = require('colors');
+const { color } = require('colors');
 const uploadOnCloudinary = require('../utils/cloudinary');
 
 const createCategoryController = async (req, res) => {
@@ -62,7 +62,7 @@ const getAllCategoryController = async (req, res) => {
     try {
         const allCategories = await Category.find({});
 
-        if(!allCategories) {
+        if (!allCategories) {
             return res.status(404).json({
                 success: false,
                 message: "No Category Found"
@@ -79,22 +79,22 @@ const getAllCategoryController = async (req, res) => {
     } catch (error) {
         res.status(500).json({
             success: false,
-            message: "Failed/Error in Getting All Categories",  
+            message: "Failed/Error in Getting All Categories",
             error: error.message
         })
     }
 }
 
-const updateCategoryController = async(req, res) => {
+const updateCategoryController = async (req, res) => {
     try {
         const { id } = req.params;
-        const {title, image} = req.body;
+        const { title, image } = req.body;
 
         console.log('id', id);
 
-        const updateCat = await Category.findByIdAndUpdate(id, {title, image}, {new: true});
+        const updateCat = await Category.findByIdAndUpdate(id, { title, image }, { new: true });
 
-        if(!updateCat){
+        if (!updateCat) {
             return res.status(404).json({
                 success: false,
                 message: "Category not found"
@@ -117,9 +117,9 @@ const updateCategoryController = async(req, res) => {
 
 const deleteCategoryController = async (req, res) => {
     try {
-        const {id} = req.params;
+        const { id } = req.params;
 
-        if(!id){
+        if (!id) {
             return res.status(400).json({
                 success: false,
                 message: "Category ID is required"
@@ -128,7 +128,7 @@ const deleteCategoryController = async (req, res) => {
 
         const category = await Category.findById(id);
 
-        if(!category){
+        if (!category) {
             return res.status(404).json({
                 success: false,
                 message: "Category not found"
@@ -137,7 +137,7 @@ const deleteCategoryController = async (req, res) => {
 
         const deleteCat = await Category.findByIdAndDelete(id);
 
-        if(!deleteCat){
+        if (!deleteCat) {
             return res.status(500).json({
                 success: false,
                 message: "Error in deleting category"
@@ -159,8 +159,8 @@ const deleteCategoryController = async (req, res) => {
     }
 }
 
-module.exports = { 
-    createCategoryController, 
+module.exports = {
+    createCategoryController,
     getAllCategoryController,
     updateCategoryController,
     deleteCategoryController

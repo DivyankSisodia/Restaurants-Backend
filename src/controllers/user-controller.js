@@ -1,13 +1,13 @@
-const User = require('../models/user');
+const User = require('../models/user.model');
 const bcrypt = require('bcrypt');
 
 // Getting user info
-const getUserController = async (req, res)=>{
+const getUserController = async (req, res) => {
     try {
         // find user
         const user = await User.findById({ _id: req.body.id });
         // validation, if user is not found
-        if(!user){
+        if (!user) {
             return res.status(404).json({
                 success: false,
                 message: "User Not Found",
@@ -47,10 +47,10 @@ const updateUserController = async (req, res) => {
         }
         // update user info
         const { userName, email, phone, address } = req.body;
-        if(userName) user.userName = userName;
-        if(email) user.email = email;
-        if(phone) user.phone = phone;
-        if(address) user.address = address;
+        if (userName) user.userName = userName;
+        if (email) user.email = email;
+        if (phone) user.phone = phone;
+        if (address) user.address = address;
         // save user info
         await user.save();
         // send user info
@@ -159,7 +159,7 @@ const changeUserPasswordController = async (req, res) => {
 };
 
 // delete user profile
-const deleteUserController = async (req, res)=> {
+const deleteUserController = async (req, res) => {
     try {
         const userInfo = await User.findByIdAndDelete(req.params.id);
 

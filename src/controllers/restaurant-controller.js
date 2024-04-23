@@ -1,8 +1,8 @@
 const uploadOnCloudinary = require("../utils/cloudinary");
-const Restaurant = require("../models/restaurant");
+const Restaurant = require("../models/restaurant.model");
 const createRestaurantController = async (req, res) => {
     try {
-        const { title, imageUrl, foods, time, rating, pickUp, delivery, isOpen, address } = req.body;
+        const { title, foods, time, rating, pickUp, delivery, isOpen, address } = req.body;
         console.log(req.body);
 
         if (!title) {
@@ -12,16 +12,9 @@ const createRestaurantController = async (req, res) => {
             });
         }
 
-        console.log(req.file);
-
-        if (!req.file) {
-            return res.status(400).json({
-                success: false,
-                message: 'restaurant image is required'
-            });
-        }
-
         const restaurantImageLocalPath = req.file.path;
+
+        console.log('restaurantImageLocalPath', restaurantImageLocalPath)
 
         const restaurantImage = await uploadOnCloudinary(restaurantImageLocalPath);
 

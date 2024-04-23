@@ -5,7 +5,7 @@ const authMiddleware = require('../../../middlewares/auth-middleware');
 
 const router = express.Router();
 
-router.post('/category/create', upload.single('image'),createCategoryController);
+router.post('/category/create', upload.single('image'), authMiddleware,createCategoryController);
 
 router.get('/category/getAll', getAllCategoryController);
 
