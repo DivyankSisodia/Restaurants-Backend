@@ -1,4 +1,4 @@
-const Category = require('../models/category');
+const Category = require('../models/category.model');
 const {color} = require('colors');
 const uploadOnCloudinary = require('../utils/cloudinary');
 
