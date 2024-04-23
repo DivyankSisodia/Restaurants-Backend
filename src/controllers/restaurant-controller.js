@@ -65,7 +65,10 @@ const createRestaurantController = async (req, res) => {
 
 const getAllRestaurantsController = async (req, res) => {
     try {
-        const restaurants = await Restaurant.find({});
+        const restaurants = await Restaurant.find({})
+            .populate({
+                path: "foods"
+            }).exec()
         if (!restaurants) {
             return res.status(404).json({
                 success: false,
@@ -99,7 +102,10 @@ const getRestaurantByIdController = async (req, res) => {
             });
         }
         //find restaurant
-        const restaurant = await Restaurant.findById(restaurantId);
+        const restaurant = await Restaurant.findById(restaurantId)
+            .populate({
+                path: "foods"
+            }).exec()
         if (!restaurant) {
             return res.status(404).send({
                 success: false,
