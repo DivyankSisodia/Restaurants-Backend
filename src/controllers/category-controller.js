@@ -15,18 +15,39 @@ const createCategoryController = async (req, res) => {
         }
 
         // Check if req.file exists before accessing its properties
+        
         let categoryImage;
+
         if (req.file) {
             const categoryImageLocalPath = req.file.path;
-            categoryImage = await uploadOnCloudinary(categoryImageLocalPath);
+            console.log('categoryImageLocalPath', categoryImageLocalPath);
 
-            if (!categoryImage) {
+            try {
+                categoryImage = await uploadOnCloudinary(categoryImageLocalPath);
+
+                console.log('categoryImage', categoryImage);
+
+                if (!categoryImage) {
+                    return res.status(500).json({
+                        success: false,
+                        message: "provide category image"
+                    });
+                }
+
+                // Continue with the rest of your code, e.g., save categoryImage URL to database
+                // ...
+
+            } catch (error) {
+                console.error("Error uploading to Cloudinary:", error);
                 return res.status(500).json({
                     success: false,
                     message: "Error in uploading category image"
                 });
             }
         }
+
+
+        console.log('categoryImage', categoryImage);
 
         const category = new Category({
             title,
