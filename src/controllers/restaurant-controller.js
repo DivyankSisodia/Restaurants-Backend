@@ -114,6 +114,8 @@ const getRestaurantByIdController = async (req, res) => {
         }
         res.status(200).send({
             success: true,
+            foodCount: restaurant.foods.length,
+            message: "Restaurant found successfully",
             restaurant: restaurant,
         });
     } catch (error) {

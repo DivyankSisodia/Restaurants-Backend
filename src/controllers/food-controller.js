@@ -120,6 +120,7 @@ const getAllFoodController = async (req, res) => {
 
         res.status(200).json({
             success: true,
+            totalCount: foods.length,
             message: "All Foods",
             data: foods
         });
