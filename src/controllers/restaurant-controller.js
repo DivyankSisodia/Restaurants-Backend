@@ -159,6 +159,35 @@ const deleteRestaurantController = async (req, res) => {
     }
 };
 
+const updateRestaurantController = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { title, time, rating, pickUp, delivery, isOpen, address } = req.body;
+
+        console.log('id', id);
+
+        const updateRestaurantDetails = await Restaurant.findByIdAndUpdate(id, { title, time, rating, pickUp, delivery, isOpen, address }, { new: true });
+
+        if (!updateRestaurantDetails) {
+            return res.status(404).json({
+                success: false,
+                message: "Category not found"
+            });
+        }
+
+        res.status(200).json({
+            success: true,
+            message: "Category Updated Successfully",
+            data: updateRestaurantDetails
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: 'Error in updating restaurant',
+            error: error.message
+        });
+    }
+}
 
 
-module.exports = { createRestaurantController, getAllRestaurantsController, getRestaurantByIdController, deleteRestaurantController };
+module.exports = { createRestaurantController, getAllRestaurantsController, getRestaurantByIdController, deleteRestaurantController, updateRestaurantController };
