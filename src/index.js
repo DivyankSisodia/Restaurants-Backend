@@ -17,6 +17,10 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use('/api', ApiRoutes);
 
+app.use('/', (req, res) => {
+    res.send('Welcome to Restaurant App');
+});
+
 app.listen(PORT, async () => {
     console.log(`Server is running on port ${PORT}`.bgMagenta);
     await connect();

@@ -50,7 +50,27 @@ async function loginUser(email, password) {
     }
 }
 
+async function logoutUser() {
+    try {
+       const result = await userRepository.logoutUser(email);
+
+       if(!result){
+           return { success: false, message: "User Not Found" };
+       }
+
+        const token = JWT.sign({ id: user._id }, process.env.JWT_SECRET, {
+            expiresIn: Date.now(),
+        });
+
+        return { success: true, message: "Logout Successfully", token, user };
+    } catch (error) {
+        console.log(error);
+        return { success: false, message: "Error In Logout Service", error };
+    }
+}
+
 module.exports = {
     registerUser,
     loginUser,
+    logoutUser
 };

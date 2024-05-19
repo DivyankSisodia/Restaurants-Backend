@@ -61,11 +61,11 @@ const createFoodController = async (req, res) => {
         await Restaurant.findByIdAndUpdate(
             {
                 _id: restaurantID,
-            },{
-                $push: {
-                    foods: savedFood._id
-                }
-            },
+            }, {
+            $push: {
+                foods: savedFood._id
+            }
+        },
             { new: true }
         )
 
@@ -134,11 +134,11 @@ const getAllFoodController = async (req, res) => {
     }
 }
 
-const getSingleFoodController = async(req, res) => {
+const getSingleFoodController = async (req, res) => {
     try {
         const foodId = req.params.id;
 
-        if(!foodId) {
+        if (!foodId) {
             return res.status(400).json({
                 success: false,
                 message: "Food ID is required"
@@ -147,7 +147,7 @@ const getSingleFoodController = async(req, res) => {
 
         const food = await Food.findOne({ _id: foodId });
 
-        if(!food) {
+        if (!food) {
             return res.status(404).json({
                 success: false,
                 message: "Food not found"
@@ -181,16 +181,21 @@ const searchFoodController = async (req, res) => {
             });
         }
 
-       const search = await Food.find(
-        {
-            "$or": [
-                { "title" : {$regex:req.params.key}},
-                { "description" : {$regex:req.params.key}}
-            ]
+        if (key.length < 2) {
+            return res.status(400).json({
+                success: false,
+                message: "Key must be at least 3 characters"
+            });
         }
-       );
 
-        if (!search) {
+        // Convert the key to lowercase before using it in the regex
+        const search = await Food.find({
+            "$or": [
+                { "title": { $regex: new RegExp(req.params.key, 'i') } }, // 'i' flag for case-insensitive
+            ]
+        });
+
+        if (search.length === 0) { // check if search result is empty
             return res.status(404).json({
                 success: false,
                 message: "No food found"
@@ -210,6 +215,7 @@ const searchFoodController = async (req, res) => {
         });
     }
 }
+
 
 module.exports = { createFoodController, getAllFoodController, getSingleFoodController, searchFoodController };
 

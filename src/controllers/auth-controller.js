@@ -77,7 +77,32 @@ async function loginController(req, res) {
     }
 }
 
+async function logoutController(req, res) {
+    try {
+        const { email } = req.body;
+        if (!email) {
+            return res.status(500).send({
+                success: false,
+                message: "Please Provide Email",
+            });
+        }
+        const result = await userService.logoutUser(email);
+        if (!result.success) {
+            return res.status(500).send(result);
+        }
+        res.status(200).send(result);
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({
+            success: false,
+            message: "Error In Logout API",
+            error,
+        });
+    }
+}
+
 module.exports = {
     registerController,
     loginController,
+    logoutController
 };
