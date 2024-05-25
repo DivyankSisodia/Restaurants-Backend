@@ -3,6 +3,7 @@ const express = require('express');
 const connect = require('./config/database');
 const bodyParser = require('body-parser');
 const morgan = require('morgan');
+const cors = require('cors');
 
 const { PORT } = require('./config/server-config');
 const ApiRoutes = require('./routes/index');
@@ -11,6 +12,8 @@ const ApiRoutes = require('./routes/index');
 const app = express();
 
 app.use(morgan('dev'));
+
+app.use(cors());
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
