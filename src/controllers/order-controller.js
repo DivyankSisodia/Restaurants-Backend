@@ -1,3 +1,8 @@
+// controllers/orderController.js
+const Order = require('../models/order.model');
+const Food = require('../models/food.model');
+const User = require('../models/user.model');
+
 const createOrder = async (req, res) => {
   try {
     const { userId, foods } = req.body;
