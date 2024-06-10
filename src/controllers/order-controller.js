@@ -1,7 +1,6 @@
-// controllers/orderController.js
-const Order = require('../models/order.model');
-const Food = require('../models/food.model');
-const User = require('../models/user.model');
+const Order = require('../models/order');
+const Food = require('../models/food');
+const User = require('../models/user');
 
 const createOrder = async (req, res) => {
   try {
@@ -23,23 +22,17 @@ const createOrder = async (req, res) => {
           throw new Error(`Food item with id ${item.food} not found`);
         }
 
-        // Parse quantity to ensure it's a number
         const quantity = parseInt(item.quantity, 10);
 
-        // Log to debug quantity values
-        console.log(`Adding quantity: ${quantity} for food: ${item.food}`);
         totalQuantity += quantity;
         totalPrice += food.price * quantity;
 
         return {
-          food: item.food,
+          food: food._id,
           quantity: quantity
         };
       })
     );
-
-    // Log total quantity and price for debugging
-    console.log(`Total Quantity: ${totalQuantity}, Total Price: ${totalPrice}`);
 
     const order = new Order({
       user: userId,
@@ -50,9 +43,11 @@ const createOrder = async (req, res) => {
 
     await order.save();
 
+    const populatedOrder = await order.populate('foods.food').execPopulate();
+
     res.status(201).json({
       message: 'Order created successfully',
-      order
+      order: populatedOrder
     });
   } catch (error) {
     res.status(400).json({ 
@@ -64,6 +59,32 @@ const createOrder = async (req, res) => {
   }
 };
 
+const getOrderDetails = async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    const orders = await Order.find({ user: userId }).populate('foods.food');
+
+    if (!orders.length) {
+      return res.status(404).json({ message: 'No orders found for this user' });
+    }
+
+    res.status(200).json({
+      message: 'Order details fetched successfully',
+      orders
+    });
+  } catch (error) {
+    res.status(500).json({ 
+        message: 'Failed to fetch order details',
+        error: error,
+        success: false,
+        statuscode: 500
+    });
+  }
+};
+
+
 module.exports = {
-  createOrder
+  createOrder,
+  getOrderDetails
 };
