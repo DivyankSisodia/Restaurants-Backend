@@ -1,6 +1,6 @@
-const Order = require('../models/order');
-const Food = require('../models/food');
-const User = require('../models/user');
+const Order = require('../models/order.model');
+const Food = require('../models/food.model');
+const User = require('../models/user.model');
 
 const createOrder = async (req, res) => {
   try {
