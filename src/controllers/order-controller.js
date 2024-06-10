@@ -15,46 +15,38 @@ const createOrder = async (req, res) => {
     let totalQuantity = 0;
     let totalPrice = 0;
 
-    const orderFoods = await Promise.all(
-      foods.map(async (item) => {
-        const food = await Food.findById(item.food);
-        if (!food) {
-          throw new Error(`Food item with id ${item.food} not found`);
-        }
+    const foodItems = await Promise.all(foods.map(async food => {
+      const foodItem = await Food.findById(food.foodId);
+      if (!foodItem) {
+        throw new Error(`Food item with ID ${food.foodId} not found`);
+      }
+      totalQuantity += food.quantity;
+      totalPrice += foodItem.price * food.quantity;
+      return {
+        food: food.foodId,
+        quantity: food.quantity
+      };
+    }));
 
-        const quantity = parseInt(item.quantity, 10);
-
-        totalQuantity += quantity;
-        totalPrice += food.price * quantity;
-
-        return {
-          food: food._id,
-          quantity: quantity
-        };
-      })
-    );
-
-    const order = new Order({
+    const newOrder = new Order({
       user: userId,
-      foods: orderFoods,
+      foods: foodItems,
       totalQuantity,
       totalPrice
     });
 
-    await order.save();
-
-    const populatedOrder = await order.populate('foods.food').execPopulate();
+    const savedOrder = await newOrder.save();
 
     res.status(201).json({
       message: 'Order created successfully',
-      order: populatedOrder
+      order: savedOrder
     });
   } catch (error) {
     res.status(400).json({ 
-        message: error.message,
-        error: error,
-        success: false,
-        statuscode: 400
+      message: error.message,
+      error: error,
+      success: false,
+      statuscode: 400
     });
   }
 };
@@ -75,14 +67,13 @@ const getOrderDetails = async (req, res) => {
     });
   } catch (error) {
     res.status(500).json({ 
-        message: 'Failed to fetch order details',
-        error: error,
-        success: false,
-        statuscode: 500
+      message: 'Failed to fetch order details',
+      error: error,
+      success: false,
+      statuscode: 500
     });
   }
 };
-
 
 module.exports = {
   createOrder,
