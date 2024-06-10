@@ -4,7 +4,19 @@ const User = require('../models/user.model');
 
 const createOrder = async (req, res) => {
   try {
+    console.log('Request Body:', req.body); // Log the request body for debugging
+
     const { userId, foods } = req.body;
+
+    // Check if userId is provided
+    if (!userId) {
+      return res.status(400).json({ message: 'User ID is required' });
+    }
+
+    // Check if foods array is provided
+    if (!foods || !Array.isArray(foods) || foods.length === 0) {
+      return res.status(400).json({ message: 'Foods are required and must be an array' });
+    }
 
     // Check if user exists
     const user = await User.findById(userId);
@@ -16,14 +28,14 @@ const createOrder = async (req, res) => {
     let totalPrice = 0;
 
     const foodItems = await Promise.all(foods.map(async food => {
-      const foodItem = await Food.findById(food.foodId);
+      const foodItem = await Food.findById(food.food); // Correctly access the food ID
       if (!foodItem) {
-        throw new Error(`Food item with ID ${food.foodId} not found`);
+        throw new Error(`Food item with ID ${food.food} not found`);
       }
       totalQuantity += food.quantity;
       totalPrice += foodItem.price * food.quantity;
       return {
-        food: food.foodId,
+        food: food.food, // Correctly set the food ID
         quantity: food.quantity
       };
     }));
@@ -42,6 +54,7 @@ const createOrder = async (req, res) => {
       order: savedOrder
     });
   } catch (error) {
+    console.error('Error creating order:', error);  // Log the error for debugging
     res.status(400).json({ 
       message: error.message,
       error: error,
@@ -55,6 +68,11 @@ const getOrderDetails = async (req, res) => {
   try {
     const { userId } = req.params;
 
+    // Validate if userId is provided
+    if (!userId) {
+      return res.status(400).json({ message: 'User ID is required' });
+    }
+
     const orders = await Order.find({ user: userId }).populate('foods.food');
 
     if (!orders.length) {
@@ -66,6 +84,7 @@ const getOrderDetails = async (req, res) => {
       orders
     });
   } catch (error) {
+    console.error('Error fetching order details:', error);  // Log the error for debugging
     res.status(500).json({ 
       message: 'Failed to fetch order details',
       error: error,
