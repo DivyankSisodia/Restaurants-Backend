@@ -94,7 +94,44 @@ const getOrderDetails = async (req, res) => {
   }
 };
 
+const updateOrder = async (req, res) => {
+  try {
+
+    const { orderId } = req.params;
+    const { status } = req.body;
+
+    // Validate if orderId is provided
+    if (!orderId) {
+      return res.status(400).json({ message: 'Order ID is required' });
+    }
+
+    // Validate if status is provided
+    if (!status) {
+      return res.status(400).json({ message: 'Status is required' });
+    }
+
+    const order = await Order.findByIdAndUpdate(orderId, { status }, { new: true });
+
+    if(!order) {
+      return res.status(404).json({ message: 'Order not found' });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Order Updated Successfully",
+      data: order
+  });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Failed to update order',
+      error: error,
+    })
+  }
+}
+
 module.exports = {
   createOrder,
-  getOrderDetails
+  getOrderDetails,
+  updateOrder
 };
