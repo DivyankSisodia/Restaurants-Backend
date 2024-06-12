@@ -67,20 +67,29 @@ const createOrder = async (req, res) => {
 const getOrderDetails = async (req, res) => {
   try {
     const { userId } = req.params;
+    const { page = 1, limit = 4 } = req.query; // Default to page 1 and limit 10
 
     // Validate if userId is provided
     if (!userId) {
       return res.status(400).json({ message: 'User ID is required' });
     }
 
-    const orders = await Order.find({ user: userId }).populate('foods.food');
+    const totalOrders = await Order.countDocuments({ user: userId });
 
-    if (!orders.length) {
+    if (totalOrders === 0) {
       return res.status(404).json({ message: 'No orders found for this user' });
     }
 
+    const orders = await Order.find({ user: userId })
+      .populate('foods.food')
+      .skip((page - 1) * limit)
+      .limit(parseInt(limit));
+
     res.status(200).json({
       message: 'Order details fetched successfully',
+      totalOrders,
+      currentPage: parseInt(page),
+      totalPages: Math.ceil(totalOrders / limit),
       orders
     });
   } catch (error) {
@@ -93,6 +102,7 @@ const getOrderDetails = async (req, res) => {
     });
   }
 };
+
 
 const updateOrder = async (req, res) => {
   try {
